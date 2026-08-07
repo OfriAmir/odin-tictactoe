@@ -28,7 +28,6 @@ const gameboard = (function() {
             printArr[Math.floor(j/3)].push(squares[j].getValue())
         }
         console.table(printArr)
-        printArr = []
     }
     function getGameboard() {
         return squares;
@@ -110,17 +109,23 @@ const game = (function(){
         }
     }
     function getWinner(){
-        for (let player of players){
-            if (player.winner) return player.name;
+        if (typeof players == "object"){ //because players is not set when checking if ther's a winner before using setplayers(arr) in startGame(arr).
+            for (let player of players){
+                if (player.winner) return player.name;
+            }
         }
     }
 
-    function startGame(arr) {
-        setPlayers(arr)
+    function startGame(arr, changePlayers) {
+        if (!players) setPlayers(arr)
+        else restartGame(arr, changePlayers)
     }
 
     let rounds = 0
     function playTurn(choice){
+        if (getWinner()){
+            restartGame()
+        }
         let activePlayer = setGetActivePLayer()
         let isNotTaken = board[choice-1].setValue(activePlayer.mark)
         if (isNotTaken){
@@ -128,7 +133,7 @@ const game = (function(){
             if (rounds < 4){
                 rounds++
             } else {
-                if (checkGameOver()) console.log(`${getWinner()} Won!`)
+                if (checkGameOver()) console.log(`---${getWinner()} Won!---`)
             }
         } else {
             setGetActivePLayer()
@@ -137,13 +142,14 @@ const game = (function(){
 
     }
 
-    function restartGame(changePlayers, arr){
-        if (!changePlayers){
+    function restartGame(arr, changePlayers){
+        if (!(changePlayers == "change players")){
             arr = lastGameArr
         }
-        startGame(arr)
+        setPlayers(arr)
         rounds = 0
         gameboard.resetGameboard()
+        console.log("---Restarted---")
     }
     return {startGame, playTurn, restartGame}
 })()
