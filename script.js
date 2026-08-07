@@ -1,22 +1,35 @@
-const gameboard = (()=>{
+const gameboard = (function() {
     function GameboardSquare(){
         let status;
         function getValue() {
             return status;
         }
         function setValue(player) {
+            if (player == "empty"){ 
+                status = null
+                return
+            } else if (status) return
             if (player == "x") status = "x";
             else if (player == "o") status = "o";
-            else if (player == "empty") status = null;
-        }
-        
+            return true
+        } 
         return {getValue, setValue};
     }
     let squares = [];
     for (let i = 0; i < 9; i++){
         squares.push(GameboardSquare());
     }
-
+    function printGameboard() {
+        let printArr = []
+        for (let i = 0; i < 3; i++){
+            printArr.push([])
+        }
+        for (let j = 0; j < 9; j++){
+            printArr[Math.floor(j/3)].push(squares[j].getValue())
+        }
+        console.table(printArr)
+        printArr = []
+    }
     function getGameboard() {
         return squares;
     }
@@ -24,12 +37,18 @@ const gameboard = (()=>{
     function resetGameboard() {
         squares.forEach(obj => obj.setValue("empty"));
     }
-    return {getGameboard, resetGameboard};
+    return {getGameboard, printGameboard, resetGameboard};
 })()
 
-const game = () => {
+const game = (function(){
+    let playerX;
+    let playerO;
+    let players;
+    let board = gameboard.getGameboard();
+    let lastGameArr
     function setPlayers (arr){
-        const players = [
+        lastGameArr = arr.slice(); // To use in the next game in case the players don't want to change names or marks (X,O)
+        players = [
         {
             name: null,
             mark: null,
@@ -47,10 +66,11 @@ const game = () => {
         players[0].mark = arr[0].mark;
         players[1].mark = arr[1].mark;
         if (players[0].mark = "x"){
-            let [playerX, playerO] = [players[0],players[1]];
+            [playerX, playerO] = [players[0],players[1]];
         } else {
-            let [playerX, playerO] = [players[1],players[0]];
+            [playerX, playerO] = [players[1],players[0]];
         }
+
     };
 
     let isFirstTurn = true;
@@ -71,15 +91,14 @@ const game = () => {
         }
     }
 
-    let winTriplets = [[1,2,3],[4,5,6][7,8,9][1,4,7][2,5,8][3,6,9][1,5,9][3,5,7]];
+    let winTriplets = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
 
     function checkGameOver (){
-        let gameboard = gameboard.getGameboard();
         for (let mark of ["x","o"]){
             for (let i = 0; i < 9; i++){
                 let sum = 0
                 for (let position of winTriplets[i])
-                    if (gameboard[position].getValue() == mark) ++sum;
+                    if (board[position].getValue() == mark) ++sum;
                     else break;
                     isTriplet = true
                 if (isTriplet) {
@@ -102,15 +121,33 @@ const game = () => {
 
     let rounds = 0
     function playTurn(choice){
-        let gameboard = gameboard.getGameboard()
-        let activePlayer = setActivePLayer()
-        gameboard[choice].setValue(activePlayer.mark)
-        if (rounds < 5){
-            rounds++
+        let activePlayer = setGetActivePLayer()
+        let isNotTaken = board[choice-1].setValue(activePlayer.mark)
+        if (isNotTaken){
+            gameboard.printGameboard()
+            if (rounds < 4){
+                rounds++
+            } else {
+                if (checkGameOver()) console.log(`${getWinner()} Won!`)
+            }
         } else {
-            if (checkGameOver()) getWinner()
+            setGetActivePLayer()
+            console.log("You picked a square that was already taken! Try again!")
         }
+
     }
-    return {startGame, playTurn}//should add restart functionality
-}
+
+    function restartGame(changePlayers, arr){
+        if (!changePlayers){
+            arr = lastGameArr
+        }
+        startGame(arr)
+        rounds = 0
+        gameboard.resetGameboard()
+    }
+    return {startGame, playTurn, restartGame}
+})()
+
+
+game.startGame([{name:"Richard", mark: "x",},{name: "Paul", mark: "o"}])
 
