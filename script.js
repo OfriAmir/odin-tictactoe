@@ -69,17 +69,11 @@ const game = (function(){
         } else {
             [playerX, playerO] = [players[1],players[0]];
         }
-
     };
 
-    let isFirstTurn = true;
 
     function setGetActivePLayer() {
-        if (isFirstTurn) {
-            playerX.active = true;
-            isFirstTurn = false;
-            return playerX
-        } else if (playerX.active){
+        if (playerX.active){
             playerX.active = false;
             playerO.active = true;
             return playerO
@@ -94,50 +88,62 @@ const game = (function(){
 
     function checkGameOver (){
         for (let mark of ["x","o"]){
-            for (let i = 0; i < 9; i++){
+            for (let i = 0; i < 8; i++){
                 let sum = 0
-                for (let position of winTriplets[i])
-                    if (board[position].getValue() == mark) ++sum;
+                for (let position of winTriplets[i]){
+                    if (board[position-1].getValue() == mark) ++sum;//it's indexes so substracted by 1.
                     else break;
-                    isTriplet = true
-                if (isTriplet) {
-                    if (mark == "x") players[0].winner = true;
-                    else players[1].winner = true;
-                    return true;
+                    if (sum == 3){
+                        if (mark == "x") players[0].winner = true;
+                        else players[1].winner = true;
+                        return "win";
+                    }
                 }
             }
         }
+        const tie = board.every(item => item.getValue())
+        if (tie) return "tie"
     }
     function getWinner(){
-        if (typeof players == "object"){ //because players is not set when checking if ther's a winner before using setplayers(arr) in startGame(arr).
-            for (let player of players){
-                if (player.winner) return player.name;
-            }
+        for (let player of players){
+            if (player.winner) return player.name;
         }
     }
 
-    function startGame(arr, changePlayers) {
+    function startGame(arr = [{name:"Player 1", mark: "x",},{name: "Player 2", mark: "o"}], changePlayers) {
         if (!players) setPlayers(arr)
         else restartGame(arr, changePlayers)
+        activePlayer = playerX //playerX starts in tictactoe
+        activePlayer.active = true
+        displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)  
     }
 
     let rounds = 0
     function playTurn(choice){
-        if (getWinner()){
+        if (checkGameOver()){
             restartGame()
         }
-        let activePlayer = setGetActivePLayer()
-        let isNotTaken = board[choice-1].setValue(activePlayer.mark)
+        let isNotTaken = board[choice].setValue(activePlayer.mark)
         if (isNotTaken){
-            gameboard.printGameboard()
-            if (rounds < 4){
+            displayController.updateGameboard()
+            if (rounds < 4){ //There can't be a winner in the first 4 rounds.
                 rounds++
             } else {
-                if (checkGameOver()) console.log(`---${getWinner()} Won!---`)
+                let gameOverMessage = checkGameOver()
+                if (gameOverMessage == "tie") {
+                    displayController.displaySentence(`---It's a tie! No one won!---`)
+                    return
+                } else if (gameOverMessage == "win"){
+                    displayController.displaySentence(`---${getWinner()} Won!---`)
+                    return
+                }
             }
+            activePlayer = setGetActivePLayer() // for next round
+            displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)            
         } else {
             setGetActivePLayer()
-            console.log("You picked a square that was already taken! Try again!")
+            activePlayer = setGetActivePLayer() //twice to keep it the same
+            displayController.displaySentence(`You picked a square that was already taken! Try again. It is ${activePlayer.name}'s turn!`)
         }
 
     }
@@ -148,6 +154,9 @@ const game = (function(){
         }
         setPlayers(arr)
         rounds = 0
+        activePlayer = playerX
+        activePlayer.active = true
+        displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)
         gameboard.resetGameboard()
         console.log("---Restarted---")
     }
@@ -155,5 +164,28 @@ const game = (function(){
 })()
 
 
-game.startGame([{name:"Richard", mark: "x",},{name: "Paul", mark: "o"}])
+const displayController = (function(){
+    const squares = document.querySelectorAll(".gameboard-square")
+    const gameboardRef = document.querySelector(".gameboard")
+    function updateGameboard(){
+        let gameboardData = gameboard.getGameboard()
+        squares.forEach((item, index) => {
+            item.textContent = gameboardData[index].getValue()     
+        })
+    }
+    const text = document.querySelector(".display-sentence")
+    function displaySentence(sentence){
+        text.textContent = "hello?"
+        text.textContent = sentence
+    }
+    gameboardRef.addEventListener("click", (e) => {
+        squares.forEach((item, index) => {
+            if (e.target.getAttribute("class") == item.getAttribute("class")){
+                game.playTurn(index)
+            }
+        })
+    })
+    return ({updateGameboard, displaySentence})
+})()
 
+game.startGame()

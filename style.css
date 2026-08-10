@@ -1,0 +1,40 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-rows: min-content min-content;
+    justify-items: center;
+    align-content: center;
+    gap: 24px;
+}
+
+/* .for-centering-gameboard {
+    width: 400px;
+    display: block;
+    margin: auto;
+} */
+
+.gameboard {
+    display: inline grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
+}
+
+.gameboard-square {
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.display-sentence {
+    /* grid-column: span 3; */
+    align-self: center;
+    justify-self: center;
+}
