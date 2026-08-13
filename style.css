@@ -8,17 +8,11 @@ body {
     height: 100vh;
     width: 100vw;
     display: grid;
-    grid-template-rows: min-content min-content;
+    grid-template-rows: min-content min-content min-content;
     justify-items: center;
     align-content: center;
     gap: 24px;
 }
-
-/* .for-centering-gameboard {
-    width: 400px;
-    display: block;
-    margin: auto;
-} */
 
 .gameboard {
     display: inline grid;
@@ -34,7 +28,15 @@ body {
 }
 
 .display-sentence {
-    /* grid-column: span 3; */
     align-self: center;
     justify-self: center;
 }
+
+.settings-form {
+    position: relative
+}
+
+.playerX-score,
+.playerO-score {
+    margin-left: 16px;
+} 
