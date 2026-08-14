@@ -191,7 +191,14 @@ const displayController = (function(){
     function updateGameboard(){
         let gameboardData = gameboard.getGameboard()
         refs.squares.forEach((item, index) => {
-            item.textContent = gameboardData[index].getValue()     
+            // item.textContent = gameboardData[index].getValue()
+            if (gameboardData[index].getValue() == "x") {
+                item.style.backgroundImage = "url(images/X.png)"
+            } else if (gameboardData[index].getValue() == "o"){
+                item.style.backgroundImage = "url(images/O.png)"
+            } else {
+                item.style.backgroundImage = ""
+            }
         })
     }
     function displaySentence(sentence){
@@ -238,7 +245,7 @@ const displayController = (function(){
 
             const resetScores = refs.settingsForm.querySelector(".reset-scores").checked
             game.restartGame(settingsArr, resetScores)
-
+            
             refs.settingsForm.reset()
             refs.settingsForm.toggleAttribute("hidden")
 
