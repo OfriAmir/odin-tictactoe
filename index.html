@@ -9,10 +9,11 @@
 </head>
 <body>
     <div class="game-div">
+        <h1>Tic Tac Toe!</h1>
         <div class="display-scores">
-            <span class="playerX-name">Player 1</span><span class = "playerX-score">0</span>
+            <span class="player-up-name">Player 1</span><span class = "player-up-score">0</span><span class="player-up-mark"></span>
             <span class="colon">:</span>
-            <span class="playerO-name">Player 2</span><span class = "playerO-score">0</span>
+            <span class="player-down-name">Player 2</span><span class = "player-down-score">0</span><span class="player-down-mark"></span>
         </div>
         <div class="gameboard">
             <div class="gameboard-square one"></div>
@@ -33,12 +34,12 @@
             <button class="settings-btn">Change Settings</button>
             <form class="settings-form" action="#" method="get" hidden>
                 <div>
-                    <label for="playerX">X player name:</label>
-                    <input class="playerX" type="text" id="playerX" name="playerX" value="player 1">
+                    <label for="player-up">Player 1 name:</label>
+                    <input class="player-up" type="text" id="player-up" name="player-up" value="Player 1">
                 </div>
                 <div>
-                    <label for="playerO">O player name:</label>
-                    <input class="playerO" type="text" id="playerO" name="playerO" value="player 2">
+                    <label for="player-down">Player 2 name:</label>
+                    <input class="player-down" type="text" id="player-down" name="player-down" value="Player 2">
                 </div>
                 <div>
                     <label for="reset-scores">Reset scores</label>
@@ -51,28 +52,5 @@
             </form>
         </div>
     </div>
-    <!-- <form class="settings-form" action="#" method="get" hidden>
-        <div>
-            <label for="playerX">X player name:</label>
-            <input class="playerX" type="text" id="playerX" name="playerX" value="player 1">
-        </div>
-        <div>
-            <label for="playerO">O player name:</label>
-            <input class="playerO" type="text" id="playerO" name="playerO" value="player 2">
-        </div>
-        <div>
-            <label for="reset-scores">Reset scores</label>
-            <input class="reset-scores" type="checkbox" id="reset-scores" name="reset-scores">
-        </div>
-        <div>
-            <button class="submit-btn" type="button">OK</button>
-            <button class="cancel-btn" type="button">Cancel</button>
-        </div>
-    </form> -->
-    <!-- <div class="display-scores">
-        <div><span class="playerX-name">Player 1</span><span class = "playerX-score">0</span></div>
-        <div>:</div>
-        <div><span class="playerO-name">Player 2</span><span class = "playerO-score">0</span></div>
-    </div> -->
 </body>
 </html>

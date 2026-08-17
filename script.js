@@ -19,16 +19,7 @@ const gameboard = (function() {
     for (let i = 0; i < 9; i++){
         squares.push(GameboardSquare());
     }
-    function printGameboard() {
-        let printArr = []
-        for (let i = 0; i < 3; i++){
-            printArr.push([])
-        }
-        for (let j = 0; j < 9; j++){
-            printArr[Math.floor(j/3)].push(squares[j].getValue())
-        }
-        console.table(printArr)
-    }
+
     function getGameboard() {
         return squares;
     }
@@ -36,7 +27,7 @@ const gameboard = (function() {
     function resetGameboard() {
         squares.forEach(obj => obj.setValue("empty"));
     }
-    return {getGameboard, printGameboard, resetGameboard};
+    return {getGameboard, resetGameboard};
 })()
 
 const game = (function(){
@@ -60,7 +51,10 @@ const game = (function(){
         winner: false,
         winCount: 0,
     }];
-    [playerX, playerO] = [players[0],players[1]]
+
+    [playerX, playerO] = [players[0],players[1]] //first round, player 1 is X. Every round it alternates between player 1 and player 2.
+
+
     function setPlayers (arr, resetWinCount){
         lastGameArr = arr.slice(); // To use in the next game in case the players don't want to change names. Used in restartGame()
         for (let i = 0; i < 2; i++){
@@ -69,17 +63,15 @@ const game = (function(){
             players[i].winner = false;
             if (resetWinCount) {
                 players[i].winCount = 0;
-                // activePlayer = playerX
-                // activePlayer.active = true
             }
         }
         displayController.updateScores()
+        displayController.updateMarks()
     };
 
 
     function setGetActivePLayer() {
         if (playerX.active){
-            console.log("hi")
             playerX.active = false;
             playerO.active = true;
             return playerO
@@ -115,17 +107,6 @@ const game = (function(){
     }
 
     let activePlayer
-    // activePlayer = playerX
-    // activePlayer.active = true
-
-    // function startGame(arr = ["Player 1","Player 2"], changePlayers) {
-    //     if (!players) setPlayers(arr)
-    //     else restartGame(arr, changePlayers)
-    //     activePlayer = playerX //playerX starts in tictactoe
-    //     activePlayer.active = true
-    //     displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)  
-    // }
-
     let rounds = 0
     function playTurn(choice){
         // console.log(activePlayer.mark)
@@ -140,7 +121,9 @@ const game = (function(){
             } else {
                 let gameOverMessage = checkGameOver()
                 if (gameOverMessage == "tie") {
-                    displayController.displaySentence(`---It's a tie! No one won!---`)
+                    displayController.displaySentence(`---It's a tie! No one won!---`);
+                    [players[0].mark, players[1].mark] = [players[1].mark, players[0].mark];
+                    [playerX, playerO] = [playerO, playerX];
                     return
                 } else if (gameOverMessage == "win"){
                     activePlayer.winCount++
@@ -152,7 +135,6 @@ const game = (function(){
                 }
             }
             activePlayer = setGetActivePLayer() // for next round
-            // console.log(activePlayer.mark)
             displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)            
         } else {
             setGetActivePLayer()
@@ -174,10 +156,15 @@ const game = (function(){
     }
 
     function getScores () {
-        return [playerX.winCount, playerO.winCount]
+        return [players[0].winCount, players[1].winCount]
     }
 
-    return {playTurn, restartGame, getScores,}
+
+    function getMarks () {
+        return [players[0].mark, players[1].mark]
+    }
+
+    return {playTurn, restartGame, getScores, getMarks}
 })()
 
 
@@ -189,18 +176,17 @@ const displayController = (function(){
         const restartBtn = document.querySelector(".restart-btn")
         const openSettingsBtn = document.querySelector(".settings-btn")
         const settingsForm = document.querySelector(".settings-form")
-        const playerX = document.querySelector(".playerX") 
-        const playerO = document.querySelector(".playerO")
+        const playerUp = document.querySelector(".player-up") 
+        const playerDown = document.querySelector(".player-down")
         const scores = document.querySelector(".display-scores")
 
-        return {squares ,gameboard, displaySentence, restartBtn, openSettingsBtn, settingsForm, playerX, playerO, scores,}
+        return {squares ,gameboard, displaySentence, restartBtn, openSettingsBtn, settingsForm, playerUp, playerDown, scores,}
     })()
 
 
     function updateGameboard(){
         let gameboardData = gameboard.getGameboard()
         refs.squares.forEach((item, index) => {
-            // item.textContent = gameboardData[index].getValue()
             if (gameboardData[index].getValue() == "x") {
                 item.style.backgroundImage = "url(images/X.png)"
             } else if (gameboardData[index].getValue() == "o"){
@@ -216,10 +202,23 @@ const displayController = (function(){
 
     function updateScores(){
         const scores = game.getScores()
-        const playerXScoreRef = refs.scores.querySelector(".playerX-score")
-        const playerOScoreRef = refs.scores.querySelector(".playerO-score")
-        playerXScoreRef.textContent = scores[0]
-        playerOScoreRef.textContent = scores[1]
+        const playerUpScoreRef = refs.scores.querySelector(".player-up-score")
+        const playerDownScoreRef = refs.scores.querySelector(".player-down-score")
+        playerUpScoreRef.textContent = scores[0]
+        playerDownScoreRef.textContent = scores[1]
+    }
+
+    function updateMarks(){
+        const marks = game.getMarks()
+        const playerUpMarkRef = refs.scores.querySelector(".player-up-mark")
+        const playerDownMarkRef = refs.scores.querySelector(".player-down-mark")
+        if (marks[0] == "x"){
+            playerUpMarkRef.style.backgroundImage = "url(images/X.png)"
+            playerDownMarkRef.style.backgroundImage = "url(images/O.png)"
+        } else {
+            playerDownMarkRef.style.backgroundImage = "url(images/X.png)"
+            playerUpMarkRef.style.backgroundImage = "url(images/O.png)"
+        }
     }
 
     refs.gameboard.addEventListener("click", (e) => {
@@ -242,15 +241,15 @@ const displayController = (function(){
 
     refs.settingsForm.addEventListener("click", function(e){
         if (e.target.getAttribute("class") == "submit-btn"){
-            const playerXName = refs.playerX.value
-            const playerOName = refs.playerO.value
-            settingsArr = [`${playerXName}`, `${playerOName}`]
-            refs.playerX.setAttribute("value", settingsArr[0])
-            refs.playerO.setAttribute("value", settingsArr[1])
-            const playerXNameRef = refs.scores.querySelector(".playerX-name")
-            const playerONameRef = refs.scores.querySelector(".playerO-name")
-            playerXNameRef.textContent = settingsArr[0]
-            playerONameRef.textContent = settingsArr[1]
+            const playerUpName = refs.playerUp.value
+            const playerDownName = refs.playerDown.value
+            settingsArr = [`${playerUpName}`, `${playerDownName}`]
+            refs.playerUp.setAttribute("value", settingsArr[0])
+            refs.playerDown.setAttribute("value", settingsArr[1])
+            const playerUpNameRef = refs.scores.querySelector(".player-up-name")
+            const playerDownNameRef = refs.scores.querySelector(".player-down-name")
+            playerUpNameRef.textContent = settingsArr[0]
+            playerDownNameRef.textContent = settingsArr[1]
 
             const resetScores = refs.settingsForm.querySelector(".reset-scores").checked
             game.restartGame(settingsArr, resetScores)
@@ -264,7 +263,7 @@ const displayController = (function(){
         } 
 
     })
-    return ({updateGameboard, displaySentence, updateScores,})
+    return ({updateGameboard, displaySentence, updateScores, updateMarks,})
 })()
 
-game.restartGame(["Player 1","Player 2"],true)
+game.restartGame(["Player 1","Player 2"])

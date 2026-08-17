@@ -1,22 +1,19 @@
-@font-face {
-    font-family: 'Roboto';
-    src: url('fonts/Roboto-Regular.woff2') format('woff2'),
-        url('fonts/Roboto-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+:root {
+    --font-family-reqular: system-ui, "Segoe UI", Roboto, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-family-monospace: monospace, system-ui, "Segoe UI", Roboto, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: system-ui, "Segoe UI", Roboto, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    /* font-family: Roboto; */
+    font-family: var(--font-family-reqular)
 }
 
 body{
     background-image: linear-gradient(purple, red);
+    height: 100vh;
+    padding: 24px;
 }
 
 .game-div{
@@ -24,52 +21,66 @@ body{
     border: 16px solid rgb(56, 56, 117);
     border-radius: 24px;
     box-shadow: 1px 1px 48px rgba(0, 0, 0, 0.253);
-    height: 100vh;
+    height: 100%;
     display: grid;
-    grid-template-rows: min-content 40% min-content;
+    grid-template-rows: min-content min-content 35% min-content;
     justify-items: center;
-    /* align-content: */
-    margin: 24px;
     gap: 24px;
     container-type: size;
     --gameboard-width: 40cqh;
 }
 
+h1{
+    margin: 24px 0 8px 0;
+    font-family: var(--font-family-monospace);
+    font-size: 3em;
+}
+
 .display-scores {
-    padding: 24px;
+    padding: 12px 24px;
     background-color: rgb(255, 228, 196);
     box-shadow: 1px 1px 10px;
     border-radius: 24px;
-    font-size: 2rem;
+    font-size: 1.5rem;
     display: grid;
-    grid-template-columns: max-content min-content;
-    margin-top: 16px;
+    grid-template-columns: max-content min-content min-content;
 }
 
 
-.playerX-score,
-.playerO-score,
-.display-scores .colon {
+.player-up-score,
+.player-down-score,
+.player-up-mark,
+.player-down-mark,
+.display-scores .colon
+ {
     padding-left: 24px;
 } 
 
 .display-scores .colon{
     grid-area: 2/2/3/3;
     justify-self: center;
+    font-size: 0.8rem;
 }
 
-.display-scores .playerO-name {
+.display-scores .player-down-name {
     grid-area: 3/1/4/2
 }
-.display-scores .playerO-score {
+.display-scores .player-down-score {
     grid-area: 3/2/4/3
+}
+.display-scores .player-down-mark {
+    grid-area: 3/3/4/4
+}
+
+.player-up-mark,
+.player-down-mark{
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 50% 60%;
 }
 
 
 .gameboard {
-    /* height: max(150px, 100%); */
-    /* height: 20%; */
-    /* width: 20%; */
     aspect-ratio: 1/1;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -136,7 +147,7 @@ body{
 .display-sentence {
     align-self: center;
     justify-self: center;
-    /* background-color: rgb(238, 72, 149); */
+    font-family: var(--font-family-monospace);
 }
 
 .display-sentence-container{
@@ -153,23 +164,13 @@ body{
 .settings-form {
     display: grid;
     width: max-content;
-    gap: 16px;
+    gap: 8px;
     margin: 0 auto;
-    /* position: absolute;
-    top: 80%;
-    left: 50%;
-    transform: translate(-50%, -50%);  */
     padding: 16px;
     background-color: rgb(238, 72, 149);
     border-radius: 16px;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.247);
-    margin: 16px auto;
-    /* top: 80%; */
-    /* justify-items: center; */
-    /* position: absolute; */
-    /* right: 42.5%;
-    bottom: 10%; */
-    
+    margin-bottom: 16px;
 }
 .settings-form div {
     display: grid;
@@ -177,16 +178,21 @@ body{
     justify-content: space-between;
 }
 
+.settings-form label {
+    font-size: 0.9rem;
+    align-self: center;
+}
+
 [hidden] {
     display: none !important;
 }
 
 .game-manager {
-    /* position: relative; */
     width: var(--gameboard-width);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
+    align-content: space-around;
 }
 
 .game-manager>button{
@@ -212,11 +218,9 @@ body{
 }
 
 .settings-form input:not([type = "checkbox"]){
-    /* border: 1px solid blue; */
     border-radius: 8px;
     padding: 4px 0 4px 0.5em;
     margin-left: 4px;
-    /* outline: none; */
     border: none;
     outline-color: blue;
 }
