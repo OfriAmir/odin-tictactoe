@@ -1,17 +1,38 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Regular.woff2') format('woff2'),
+        url('fonts/Roboto-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: system-ui, "Segoe UI", Roboto, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    /* font-family: Roboto; */
+}
+
+body{
+    background-image: linear-gradient(purple, red);
 }
 
 .game-div{
-    background-image: linear-gradient(purple, red);
+    background-color: rgb(72, 72, 202);
+    border: 16px solid rgb(56, 56, 117);
+    border-radius: 24px;
+    box-shadow: 1px 1px 48px rgba(0, 0, 0, 0.253);
     height: 100vh;
     display: grid;
-    grid-template-rows: min-content min-content min-content;
+    grid-template-rows: min-content 40% min-content;
     justify-items: center;
-    align-content: center;
+    /* align-content: */
+    margin: 24px;
     gap: 24px;
+    container-type: size;
+    --gameboard-width: 40cqh;
 }
 
 .display-scores {
@@ -19,9 +40,10 @@
     background-color: rgb(255, 228, 196);
     box-shadow: 1px 1px 10px;
     border-radius: 24px;
-    font-size: 4rem;
+    font-size: 2rem;
     display: grid;
     grid-template-columns: max-content min-content;
+    margin-top: 16px;
 }
 
 
@@ -46,14 +68,16 @@
 
 .gameboard {
     /* height: max(150px, 100%); */
-    height: 150px;
-    width: 150px;
-    /* aspect-ratio: 1/1; */
+    /* height: 20%; */
+    /* width: 20%; */
+    aspect-ratio: 1/1;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 24px;
+    border: 8px solid rgb(56, 56, 117);
+    box-shadow: 0 0 10px black
 
 }
 
@@ -93,40 +117,53 @@
 
 .gameboard-square:hover:nth-child(1),
 .gameboard-square:active:nth-child(1) {
-    border-top-left-radius: 8px;
+    border-top-left-radius: 24px;
 }
 .gameboard-square:hover:nth-child(3),
 .gameboard-square:active:nth-child(3) {
-    border-top-right-radius: 8px;
+    border-top-right-radius: 24px;
 }
 .gameboard-square:hover:nth-child(7),
 .gameboard-square:active:nth-child(7) {
-    border-bottom-left-radius: 8px;
+    border-bottom-left-radius: 24px;
 }
 .gameboard-square:hover:nth-child(9),
 .gameboard-square:active:nth-child(9) {
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: 24px;
 }
 
 
 .display-sentence {
     align-self: center;
     justify-self: center;
+    /* background-color: rgb(238, 72, 149); */
 }
 
-/* .game-manager {
-    position: relative;
-} */
+.display-sentence-container{
+    background-color: rgb(255, 133, 190);
+    width: 80%;
+    padding: 10px;
+    border-top-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+    overflow: hidden;
+    box-shadow: 1px 1px 10px rgb(0, 0, 0, 0.2);
+}
+
 
 .settings-form {
     display: grid;
     width: max-content;
     gap: 16px;
     margin: 0 auto;
-    position: absolute;
+    /* position: absolute;
     top: 80%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);  */
+    padding: 16px;
+    background-color: rgb(238, 72, 149);
+    border-radius: 16px;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.247);
+    margin: 16px auto;
     /* top: 80%; */
     /* justify-items: center; */
     /* position: absolute; */
@@ -143,3 +180,45 @@
 [hidden] {
     display: none !important;
 }
+
+.game-manager {
+    /* position: relative; */
+    width: var(--gameboard-width);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.game-manager>button{
+    height: min-content;
+    width: 30%;
+}
+
+.settings-form button,
+.game-manager>button{
+    padding: 5px 10px;
+    border-radius: 8px;
+    min-width: max-content;
+    border: none;
+    outline: none;
+    box-shadow: 1px 1px 5px rgb(0, 0, 0, 0.2);
+    background-color: rgb(255, 228, 196);
+    cursor: pointer;
+}
+
+.settings-form button:hover,
+.game-manager>button:hover {
+    background-color: rgb(240, 216, 188)
+}
+
+.settings-form input:not([type = "checkbox"]){
+    /* border: 1px solid blue; */
+    border-radius: 8px;
+    padding: 4px 0 4px 0.5em;
+    margin-left: 4px;
+    /* outline: none; */
+    border: none;
+    outline-color: blue;
+}
+
+

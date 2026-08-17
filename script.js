@@ -69,14 +69,17 @@ const game = (function(){
             players[i].winner = false;
             if (resetWinCount) {
                 players[i].winCount = 0;
+                // activePlayer = playerX
+                // activePlayer.active = true
             }
-            displayController.updateScores()
         }
+        displayController.updateScores()
     };
 
 
     function setGetActivePLayer() {
         if (playerX.active){
+            console.log("hi")
             playerX.active = false;
             playerO.active = true;
             return playerO
@@ -112,17 +115,20 @@ const game = (function(){
     }
 
     let activePlayer
+    // activePlayer = playerX
+    // activePlayer.active = true
 
-    function startGame(arr = ["Player 1","Player 2"], changePlayers) {
-        if (!players) setPlayers(arr)
-        else restartGame(arr, changePlayers)
-        activePlayer = playerX //playerX starts in tictactoe
-        activePlayer.active = true
-        displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)  
-    }
+    // function startGame(arr = ["Player 1","Player 2"], changePlayers) {
+    //     if (!players) setPlayers(arr)
+    //     else restartGame(arr, changePlayers)
+    //     activePlayer = playerX //playerX starts in tictactoe
+    //     activePlayer.active = true
+    //     displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)  
+    // }
 
     let rounds = 0
     function playTurn(choice){
+        // console.log(activePlayer.mark)
         if (checkGameOver()){
             restartGame()
         }
@@ -139,11 +145,14 @@ const game = (function(){
                 } else if (gameOverMessage == "win"){
                     activePlayer.winCount++
                     displayController.updateScores()
-                    displayController.displaySentence(`---${activePlayer.name} Won!---`)
+                    displayController.displaySentence(`---${activePlayer.name} Won!---`);
+                    [players[0].mark, players[1].mark] = [players[1].mark, players[0].mark];
+                    [playerX, playerO] = [playerO, playerX];
                     return
                 }
             }
             activePlayer = setGetActivePLayer() // for next round
+            // console.log(activePlayer.mark)
             displayController.displaySentence(`It is ${activePlayer.name}'s turn!`)            
         } else {
             setGetActivePLayer()
@@ -168,7 +177,7 @@ const game = (function(){
         return [playerX.winCount, playerO.winCount]
     }
 
-    return {startGame, playTurn, restartGame, getScores}
+    return {playTurn, restartGame, getScores,}
 })()
 
 
@@ -258,4 +267,4 @@ const displayController = (function(){
     return ({updateGameboard, displaySentence, updateScores,})
 })()
 
-game.startGame()
+game.restartGame(["Player 1","Player 2"],true)
